@@ -37,7 +37,7 @@ function Usuarios() {
 
             const response =
                 await axios.get(
-                    "http://localhost:3000/api/auth/usuarios"
+                    "https://inventario-macetas-production.up.railway.app/api/auth/usuarios"
                 );
 
             setUsuarios(
@@ -81,7 +81,7 @@ function Usuarios() {
         try {
 
             await axios.post(
-                "http://localhost:3000/api/auth/registro",
+                "https://inventario-macetas-production.up.railway.app/api/auth/registro",
                 formulario
             );
 
@@ -123,7 +123,7 @@ function Usuarios() {
         try {
 
             await axios.put(
-                `http://localhost:3000/api/auth/usuarios/${idUsuarioEditar}`,
+                `https://inventario-macetas-production.up.railway.app/api/auth/usuarios/${idUsuarioEditar}`,
                 formulario
             );
 
@@ -152,7 +152,7 @@ function Usuarios() {
         try {
 
             await axios.delete(
-                `http://localhost:3000/api/auth/usuarios/${id}`
+                `https://inventario-macetas-production.up.railway.app/api/auth/usuarios/${id}`
             );
 
             obtenerUsuarios();

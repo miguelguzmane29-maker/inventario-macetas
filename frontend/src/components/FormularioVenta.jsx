@@ -27,7 +27,7 @@ function FormularioVenta({
 
             const response =
                 await axios.get(
-                    "http://localhost:3000/api/productos"
+                    "https://inventario-macetas-production.up.railway.app/api/productos"
                 );
 
             setProductos(

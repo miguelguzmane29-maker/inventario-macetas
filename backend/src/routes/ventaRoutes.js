@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
 
@@ -8,15 +8,16 @@ const {
     obtenerGanancias,
     obtenerVentasPorFecha,
     obtenerVentasPorMes
-} = require('../controllers/ventaController');
+} = require("../controllers/ventaController");
 
-router.post('/', crearVenta);
+router.post("/", crearVenta);
 
-router.get('/', obtenerVentas);
+router.get("/", obtenerVentas);
 
-router.get('/ganancias', obtenerGanancias);
+router.get("/ganancias", obtenerGanancias);
 
-router.get('/por-fecha', obtenerVentasPorFecha);
-router.get('/ventas-mes', obtenerVentasPorMes);
+router.get("/filtro", obtenerVentasPorFecha);
+
+router.get("/ventas-mes", obtenerVentasPorMes);
 
 module.exports = router;

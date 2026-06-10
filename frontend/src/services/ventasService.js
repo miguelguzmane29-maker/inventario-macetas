@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API =
-    "http://localhost:3000/api/ventas";
+    "https://inventario-macetas-production.up.railway.app/api/ventas";
 
 export const obtenerVentas =
 async () => {

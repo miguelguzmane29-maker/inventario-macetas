@@ -33,7 +33,7 @@ function Productos() {
         try {
 
             const response = await axios.get(
-                "http://localhost:3000/api/productos"
+                "https://inventario-macetas-production.up.railway.app/api/productos"
             );
 
             setProductos(response.data);
@@ -79,7 +79,7 @@ function Productos() {
         try {
 
             await axios.post(
-                "http://localhost:3000/api/productos",
+                "https://inventario-macetas-production.up.railway.app/api/productos",
                 formulario
             );
 
@@ -118,7 +118,7 @@ function Productos() {
         try {
 
             await axios.put(
-                `http://localhost:3000/api/productos/${formulario.id_producto}`,
+                `https://inventario-macetas-production.up.railway.app/api/productos/${formulario.id_producto}`,
                 formulario
             );
 
@@ -142,7 +142,7 @@ function Productos() {
         try {
 
             await axios.delete(
-                `http://localhost:3000/api/productos/${id}`
+                `https://inventario-macetas-production.up.railway.app/api/productos/${id}`
             );
 
             obtenerProductos();
@@ -284,7 +284,7 @@ function Productos() {
 
         const response =
             await axios.post(
-                "http://localhost:3000/api/upload",
+                "https://inventario-macetas-production.up.railway.app/api/upload",
                 data
             );
 
@@ -370,7 +370,7 @@ productosFiltrados.map((producto) => (
 
             <img
                 src={
-                    `http://localhost:3000/uploads/${producto.imagen}`
+                    `https://inventario-macetas-production.up.railway.app/uploads/${producto.imagen}`
                 }
                 alt="producto"
                 className="w-16 h-16 object-cover rounded mx-auto"

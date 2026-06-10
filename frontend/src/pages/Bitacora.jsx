@@ -23,7 +23,7 @@ function Bitacora() {
 
             const response =
                 await axios.get(
-                    "http://localhost:3000/api/bitacora"
+                    "https://inventario-macetas-production.up.railway.app/api/bitacora"
                 );
 
             setRegistros(response.data);

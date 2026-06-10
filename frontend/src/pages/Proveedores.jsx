@@ -19,7 +19,7 @@ function Proveedores() {
         try {
 
             const response = await axios.get(
-                "http://localhost:3000/api/proveedores"
+                "https://inventario-macetas-production.up.railway.app/api/proveedores"
             );
 
             setProveedores(response.data);
@@ -37,7 +37,7 @@ function Proveedores() {
         try {
 
             await axios.post(
-                "http://localhost:3000/api/proveedores",
+                "https://inventario-macetas-production.up.railway.app/api/proveedores",
                 {
                     nombre,
                     telefono,

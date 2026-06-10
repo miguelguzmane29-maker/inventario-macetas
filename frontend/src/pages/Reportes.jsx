@@ -45,7 +45,7 @@ async () => {
 
         const response =
             await axios.get(
-                "http://localhost:3000/api/reportes/ganancias-productos"
+                "https://inventario-macetas-production.up.railway.app/api/reportes/ganancias-productos"
             );
 
         setGanancias(
@@ -62,7 +62,7 @@ async () => {
 
   const obtenerReportes = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/reportes");
+      const response = await axios.get("https://inventario-macetas-production.up.railway.app/api/reportes");
 
       setReporte(response.data);
     } catch (error) {
@@ -73,7 +73,7 @@ async () => {
   const obtenerTopProductos = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/reportes/mas-vendido",
+        "https://inventario-macetas-production.up.railway.app/api/reportes/mas-vendido",
       );
 
       setMasVendidos(response.data);

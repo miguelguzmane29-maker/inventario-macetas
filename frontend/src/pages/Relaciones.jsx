@@ -27,7 +27,7 @@ function Relaciones() {
         try {
 
             const response = await axios.get(
-                "http://localhost:3000/api/relaciones"
+                "https://inventario-macetas-production.up.railway.app/api/relaciones"
             );
 
             setRelaciones(response.data);
@@ -45,7 +45,7 @@ function Relaciones() {
         try {
 
             const response = await axios.get(
-                "http://localhost:3000/api/productos"
+                "https://inventario-macetas-production.up.railway.app/api/productos"
             );
 
             setProductos(response.data);
@@ -63,7 +63,7 @@ function Relaciones() {
         try {
 
             const response = await axios.get(
-                "http://localhost:3000/api/proveedores"
+                "https://inventario-macetas-production.up.railway.app/api/proveedores"
             );
 
             setProveedores(response.data);
@@ -90,7 +90,7 @@ function Relaciones() {
         try {
 
             await axios.post(
-                "http://localhost:3000/api/relaciones",
+                "https://inventario-macetas-production.up.railway.app/api/relaciones",
                 formulario
             );
 

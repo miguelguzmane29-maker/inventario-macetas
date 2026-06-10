@@ -50,14 +50,14 @@ function Dashboard() {
             setProductos(productosData);
 
             const stock = await axios.get(
-                "http://localhost:3000/api/reportes/stock-bajo"
+                "https://inventario-macetas-production.up.railway.app/api/reportes/stock-bajo"
             );
             setStockBajo(stock.data);
 
             if (usuario?.rol === "admin") {
 
                 const ventasPorMes = await axios.get(
-                    "http://localhost:3000/api/ventas/ventas-mes"
+                    "https://inventario-macetas-production.up.railway.app/api/ventas/ventas-mes"
                 );
                 setVentasMes(ventasPorMes.data);
 

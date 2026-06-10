@@ -259,11 +259,21 @@ const obtenerVentasPorFecha = (req, res) => {
     } = req.query;
 
     const sql = `
-        SELECT *
-        FROM ventas
-        WHERE DATE(fecha)
+        SELECT
+            v.id_venta,
+            v.fecha,
+            v.total,
+            p.nombre_interno,
+            dv.cantidad,
+            dv.precio_unitario
+        FROM ventas v
+        INNER JOIN detalle_venta dv
+            ON v.id_venta = dv.id_venta
+        INNER JOIN productos p
+            ON dv.id_producto = p.id_producto
+        WHERE DATE(v.fecha)
         BETWEEN ? AND ?
-        ORDER BY fecha DESC
+        ORDER BY v.fecha DESC
     `;
 
     connection.query(

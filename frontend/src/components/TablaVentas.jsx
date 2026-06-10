@@ -6,7 +6,7 @@ function TablaVentas({ ventas }) {
       <table className="w-full">
         <thead>
           <tr className="bg-slate-800 text-white">
-            
+
             <th className="p-3">Ticket</th>
 
             <th className="p-3">ID Venta</th>
@@ -31,7 +31,7 @@ function TablaVentas({ ventas }) {
             >
               <td>
                 <a
-                  href={`http://localhost:3000/api/ticket/${venta.id_venta}`}
+                  href={`https://inventario-macetas-production.up.railway.app/api/ticket/${venta.id_venta}`}
                   target="_blank"
                   rel="noreferrer"
                   className="
