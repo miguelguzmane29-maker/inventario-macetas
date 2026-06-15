@@ -4,25 +4,31 @@ import DashboardLayout from "../layouts/DashboardLayout";
 
 function Productos() {
 
-    const [productos, setProductos] = useState([]);
-    const [busqueda,
-    setBusqueda] =
-    useState("");
+    const API_URL =
+        "https://inventario-macetas-production.up.railway.app";
 
-    const [modoEdicion, setModoEdicion] = useState(false);
+    const [productos, setProductos] =
+        useState([]);
 
-    const [formulario, setFormulario] = useState({
-        id_producto: "",
-        nombre_interno: "",
-        descripcion: "",
-        costo_compra: "",
-        precio_venta: "",
-        stock: "",
-        tamaño: "",
-        color: "",
-        material: "",
-        imagen: ""
-    });
+    const [busqueda, setBusqueda] =
+        useState("");
+
+    const [modoEdicion, setModoEdicion] =
+        useState(false);
+
+    const [formulario, setFormulario] =
+        useState({
+            id_producto: "",
+            nombre_interno: "",
+            descripcion: "",
+            costo_compra: "",
+            precio_venta: "",
+            stock: "",
+            tamaño: "",
+            color: "",
+            material: "",
+            imagen: ""
+        });
 
     useEffect(() => {
         obtenerProductos();
@@ -33,7 +39,7 @@ function Productos() {
         try {
 
             const response = await axios.get(
-                "https://inventario-macetas-production.up.railway.app/api/productos"
+                `${API_URL}/api/productos`
             );
 
             setProductos(response.data);
@@ -48,10 +54,44 @@ function Productos() {
 
     const handleChange = (e) => {
 
+        const { name, value } = e.target;
+
+        if (
+            ["costo_compra", "precio_venta", "stock"].includes(name) &&
+            Number(value) < 0
+        ) {
+            alert("No se permiten valores negativos");
+            return;
+        }
+
         setFormulario({
             ...formulario,
-            [e.target.name]: e.target.value
+            [name]: value
         });
+
+    };
+
+    const validarFormulario = () => {
+
+        if (
+            Number(formulario.costo_compra) < 0 ||
+            Number(formulario.precio_venta) < 0 ||
+            Number(formulario.stock) < 0
+        ) {
+            alert("No se permiten valores negativos");
+            return false;
+        }
+
+        if (
+            formulario.costo_compra === "" ||
+            formulario.precio_venta === "" ||
+            formulario.stock === ""
+        ) {
+            alert("Costo, precio y stock son obligatorios");
+            return false;
+        }
+
+        return true;
 
     };
 
@@ -76,19 +116,28 @@ function Productos() {
 
     const guardarProducto = async () => {
 
+        if (!validarFormulario()) {
+            return;
+        }
+
         try {
 
             await axios.post(
-                "https://inventario-macetas-production.up.railway.app/api/productos",
+                `${API_URL}/api/productos`,
                 formulario
             );
 
-            obtenerProductos();
+            await obtenerProductos();
             limpiarFormulario();
 
         } catch (error) {
 
             console.error(error);
+
+            alert(
+                error.response?.data?.mensaje ||
+                "Error al guardar producto"
+            );
 
         }
 
@@ -115,19 +164,28 @@ function Productos() {
 
     const actualizarProducto = async () => {
 
+        if (!validarFormulario()) {
+            return;
+        }
+
         try {
 
             await axios.put(
-                `https://inventario-macetas-production.up.railway.app/api/productos/${formulario.id_producto}`,
+                `${API_URL}/api/productos/${formulario.id_producto}`,
                 formulario
             );
 
-            obtenerProductos();
+            await obtenerProductos();
             limpiarFormulario();
 
         } catch (error) {
 
             console.error(error);
+
+            alert(
+                error.response?.data?.mensaje ||
+                "Error al actualizar producto"
+            );
 
         }
 
@@ -142,59 +200,66 @@ function Productos() {
         try {
 
             await axios.delete(
-                `https://inventario-macetas-production.up.railway.app/api/productos/${id}`
+                `${API_URL}/api/productos/${id}`
             );
 
-            obtenerProductos();
+            await obtenerProductos();
 
         } catch (error) {
 
             console.error(error);
 
+            alert(
+                error.response?.data?.mensaje ||
+                "No se pudo eliminar el producto. Puede estar relacionado con ventas."
+            );
+
         }
 
     };
+
     const productosFiltrados =
-    productos.filter(
-        (producto) =>
-            producto.nombre_interno
-                ?.toLowerCase()
-                .includes(
-                    busqueda.toLowerCase()
-                ) ||
+        productos.filter(
+            (producto) =>
+                producto.nombre_interno
+                    ?.toLowerCase()
+                    .includes(
+                        busqueda.toLowerCase()
+                    ) ||
 
-            producto.id_producto
-                ?.toLowerCase()
-                .includes(
-                    busqueda.toLowerCase()
-                ) ||
+                producto.id_producto
+                    ?.toLowerCase()
+                    .includes(
+                        busqueda.toLowerCase()
+                    ) ||
 
-            producto.color
-                ?.toLowerCase()
-                .includes(
-                    busqueda.toLowerCase()
-                )
-    );
+                producto.color
+                    ?.toLowerCase()
+                    .includes(
+                        busqueda.toLowerCase()
+                    )
+        );
 
     return (
+
         <DashboardLayout>
 
-           <h1 className="text-4xl font-bold mb-6">
-    Productos
-</h1>
+            <h1 className="text-4xl font-bold mb-6">
+                Productos
+            </h1>
 
-<input
-    type="text"
-    placeholder="Buscar producto por ID, nombre o color..."
-    value={busqueda}
-    onChange={(e) =>
-        setBusqueda(e.target.value)
-    }
-    className="border p-3 rounded-lg w-full mb-6"
-/>
+            <input
+                type="text"
+                placeholder="Buscar producto por ID, nombre o color..."
+                value={busqueda}
+                onChange={(e) =>
+                    setBusqueda(e.target.value)
+                }
+                className="border p-3 rounded-lg w-full mb-6"
+            />
 
             <div className="bg-white shadow rounded-lg p-6 mb-6">
-                 
+
                 <div className="grid grid-cols-2 gap-4">
 
                     <input
@@ -223,6 +288,9 @@ function Productos() {
                     />
 
                     <input
+                        type="number"
+                        min="0"
+                        step="0.01"
                         name="costo_compra"
                         placeholder="Costo Compra"
                         value={formulario.costo_compra}
@@ -231,6 +299,9 @@ function Productos() {
                     />
 
                     <input
+                        type="number"
+                        min="0"
+                        step="0.01"
                         name="precio_venta"
                         placeholder="Precio Venta"
                         value={formulario.precio_venta}
@@ -239,6 +310,9 @@ function Productos() {
                     />
 
                     <input
+                        type="number"
+                        min="0"
+                        step="1"
                         name="stock"
                         placeholder="Stock"
                         value={formulario.stock}
@@ -270,33 +344,40 @@ function Productos() {
                         className="border p-2 rounded"
                     />
 
-                   <input
-    type="file"
-    onChange={async (e) => {
+                    <input
+                        type="file"
+                        onChange={async (e) => {
 
-        const data =
-            new FormData();
+                            const archivo =
+                                e.target.files[0];
 
-        data.append(
-            "imagen",
-            e.target.files[0]
-        );
+                            if (!archivo) {
+                                return;
+                            }
 
-        const response =
-            await axios.post(
-                "https://inventario-macetas-production.up.railway.app/api/upload",
-                data
-            );
+                            const data =
+                                new FormData();
 
-        setFormulario({
-            ...formulario,
-            imagen:
-                response.data.imagen
-        });
+                            data.append(
+                                "imagen",
+                                archivo
+                            );
 
-    }}
-    className="border p-2 rounded"
-/>
+                            const response =
+                                await axios.post(
+                                    `${API_URL}/api/upload`,
+                                    data
+                                );
+
+                            setFormulario({
+                                ...formulario,
+                                imagen:
+                                    response.data.imagen
+                            });
+
+                        }}
+                        className="border p-2 rounded"
+                    />
 
                 </div>
 
@@ -335,7 +416,7 @@ function Productos() {
 
             </div>
 
-            <div className="bg-white shadow rounded-lg p-6">
+            <div className="bg-white shadow rounded-lg p-6 overflow-x-auto">
 
                 <table className="w-full">
 
@@ -358,33 +439,48 @@ function Productos() {
                     <tbody>
 
                         {
-productosFiltrados.map((producto) => (
+                            productosFiltrados.map((producto) => (
+
                                 <tr
                                     key={producto.id_producto}
                                     className="border-b text-center"
                                 >
+
                                     <td>
 
-    {
-        producto.imagen && (
+                                        {
+                                            producto.imagen && (
 
-            <img
-                src={
-                    `https://inventario-macetas-production.up.railway.app/uploads/${producto.imagen}`
-                }
-                alt="producto"
-                className="w-16 h-16 object-cover rounded mx-auto"
-            />
+                                                <img
+                                                    src={
+                                                        `${API_URL}/uploads/${producto.imagen}`
+                                                    }
+                                                    alt="producto"
+                                                    className="w-16 h-16 object-cover rounded mx-auto"
+                                                />
 
-        )
-    }
+                                            )
+                                        }
 
-</td>
+                                    </td>
+
                                     <td>{producto.id_producto}</td>
 
                                     <td>{producto.nombre_interno}</td>
 
-                                    <td>{producto.stock}</td>
+                                    <td>
+                                        <span
+                                            className={
+                                                producto.stock <= 5
+                                                    ? "bg-red-100 text-red-700 px-3 py-1 rounded-full font-bold"
+                                                    : producto.stock <= 10
+                                                        ? "bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-bold"
+                                                        : "bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold"
+                                            }
+                                        >
+                                            {producto.stock}
+                                        </span>
+                                    </td>
 
                                     <td>${producto.costo_compra}</td>
 
@@ -430,7 +526,9 @@ productosFiltrados.map((producto) => (
             </div>
 
         </DashboardLayout>
+
     );
+
 }
 
 export default Productos;
