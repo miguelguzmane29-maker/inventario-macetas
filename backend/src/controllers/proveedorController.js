@@ -13,18 +13,15 @@ const obtenerProveedores = (req, res) => {
         ORDER BY id_proveedor DESC
     `;
 
-    connection.query(
-        sql,
-        (err, results) => {
+    connection.query(sql, (err, results) => {
 
-            if (err) {
-                return res.status(500).json(err);
-            }
-
-            res.json(results);
-
+        if (err) {
+            return res.status(500).json(err);
         }
-    );
+
+        res.json(results);
+
+    });
 
 };
 
@@ -71,11 +68,12 @@ const crearProveedor = (req, res) => {
 
             res.json({
                 mensaje: "Proveedor creado",
-                id: result.insertId
+                id_proveedor: result.insertId
             });
 
         }
     );
+
 };
 
 // Actualizar proveedor
@@ -88,6 +86,12 @@ const actualizarProveedor = (req, res) => {
         telefono,
         correo
     } = req.body;
+
+    if (!nombre || nombre.trim() === "") {
+        return res.status(400).json({
+            mensaje: "El nombre del proveedor es obligatorio"
+        });
+    }
 
     const sql = `
         UPDATE proveedores
@@ -112,6 +116,13 @@ const actualizarProveedor = (req, res) => {
                 return res.status(500).json(err);
             }
 
+            registrarBitacora(
+                "Sistema",
+                "admin",
+                `Actualizó proveedor ${nombre}`,
+                "Proveedores"
+            );
+
             res.json({
                 mensaje: "Proveedor actualizado"
             });
@@ -126,23 +137,56 @@ const eliminarProveedor = (req, res) => {
 
     const { id } = req.params;
 
-    const sql = `
-        DELETE FROM proveedores
+    const sqlRelacion = `
+        SELECT id
+        FROM producto_proveedor
         WHERE id_proveedor = ?
+        LIMIT 1
     `;
 
     connection.query(
-        sql,
+        sqlRelacion,
         [id],
-        (err) => {
+        (err, results) => {
 
             if (err) {
                 return res.status(500).json(err);
             }
 
-            res.json({
-                mensaje: "Proveedor eliminado"
-            });
+            if (results.length > 0) {
+                return res.status(400).json({
+                    mensaje:
+                        "No se puede eliminar este proveedor porque está relacionado con productos"
+                });
+            }
+
+            const sql = `
+                DELETE FROM proveedores
+                WHERE id_proveedor = ?
+            `;
+
+            connection.query(
+                sql,
+                [id],
+                (err) => {
+
+                    if (err) {
+                        return res.status(500).json(err);
+                    }
+
+                    registrarBitacora(
+                        "Sistema",
+                        "admin",
+                        `Eliminó proveedor ${id}`,
+                        "Proveedores"
+                    );
+
+                    res.json({
+                        mensaje: "Proveedor eliminado"
+                    });
+
+                }
+            );
 
         }
     );
@@ -200,6 +244,7 @@ const relacionarProductoProveedor = (req, res) => {
 
         }
     );
+
 };
 
 // Ver relaciones producto-proveedor
@@ -213,7 +258,7 @@ const obtenerRelacionProductoProveedor = (req, res) => {
             pp.nombre_proveedor
         FROM producto_proveedor pp
         INNER JOIN proveedores p
-            ON pp.id_proveedor = p.id
+            ON pp.id_proveedor = p.id_proveedor
         ORDER BY pp.id DESC
     `;
 
@@ -229,6 +274,7 @@ const obtenerRelacionProductoProveedor = (req, res) => {
 
         }
     );
+
 };
 
 module.exports = {
