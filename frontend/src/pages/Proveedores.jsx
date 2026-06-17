@@ -42,6 +42,11 @@ function Proveedores() {
 
             console.error(error);
 
+            alert(
+                error.response?.data?.mensaje ||
+                "Error al obtener proveedores"
+            );
+
         }
 
     };
@@ -95,8 +100,8 @@ function Proveedores() {
                 formulario
             );
 
+            await obtenerProveedores();
             limpiarFormulario();
-            obtenerProveedores();
 
             alert("Proveedor guardado correctamente");
 
@@ -122,7 +127,7 @@ function Proveedores() {
         });
 
         setIdProveedorEditar(
-            proveedor.id
+            proveedor.id_proveedor
         );
 
         setModoEdicion(true);
@@ -142,8 +147,8 @@ function Proveedores() {
                 formulario
             );
 
+            await obtenerProveedores();
             limpiarFormulario();
-            obtenerProveedores();
 
             alert("Proveedor actualizado correctamente");
 
@@ -176,7 +181,7 @@ function Proveedores() {
                 `${API_URL}/api/proveedores/${id}`
             );
 
-            obtenerProveedores();
+            await obtenerProveedores();
 
             alert("Proveedor eliminado correctamente");
 

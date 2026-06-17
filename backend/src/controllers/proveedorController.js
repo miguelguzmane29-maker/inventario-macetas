@@ -168,10 +168,16 @@ const eliminarProveedor = (req, res) => {
             connection.query(
                 sql,
                 [id],
-                (err) => {
+                (err, result) => {
 
                     if (err) {
                         return res.status(500).json(err);
+                    }
+
+                    if (result.affectedRows === 0) {
+                        return res.status(404).json({
+                            mensaje: "Proveedor no encontrado"
+                        });
                     }
 
                     registrarBitacora(
