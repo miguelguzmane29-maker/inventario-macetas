@@ -1,69 +1,120 @@
-function TablaVentas({ ventas }) {
-  return (
-    <div className="bg-white rounded-xl shadow-lg p-5">
-      <h2 className="text-2xl font-bold mb-5">Historial de Ventas</h2>
+function TablaVentas({
+    ventas,
+    onEliminar
+}) {
 
-      <table className="w-full">
-        <thead>
-          <tr className="bg-slate-800 text-white">
+    return (
 
-            <th className="p-3">Ticket</th>
+        <div className="bg-white p-6 rounded-xl shadow">
 
-            <th className="p-3">ID Venta</th>
+            <h2 className="text-2xl font-bold mb-5">
+                Lista de Ventas
+            </h2>
 
-            <th className="p-3">Producto</th>
+            <table className="w-full">
 
-            <th className="p-3">Cantidad</th>
+                <thead>
 
-            <th className="p-3">Precio Unitario</th>
+                    <tr className="bg-slate-800 text-white">
 
-            <th className="p-3">Total</th>
+                        <th className="p-3">
+                            ID Venta
+                        </th>
 
-            <th className="p-3">Fecha</th>
-          </tr>
-        </thead>
+                        <th className="p-3">
+                            Fecha
+                        </th>
 
-        <tbody>
-          {ventas.map((venta) => (
-            <tr
-              key={`${venta.id_venta}-${venta.nombre_interno}`}
-              className="text-center border-b"
-            >
-              <td>
-                <a
-                  href={`https://inventario-macetas-production.up.railway.app/api/ticket/${venta.id_venta}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="
-            bg-green-600
-            text-white
-            px-3
-            py-1
-            rounded
-        "
-                >
-                  PDF
-                </a>
-              </td>
-              <td className="p-3">{venta.id_venta}</td>
+                        <th className="p-3">
+                            Producto
+                        </th>
 
-              <td className="p-3">{venta.nombre_interno}</td>
+                        <th className="p-3">
+                            Cantidad
+                        </th>
 
-              <td className="p-3">{venta.cantidad}</td>
+                        <th className="p-3">
+                            Precio Unitario
+                        </th>
 
-              <td className="p-3">${venta.precio_unitario}</td>
+                        <th className="p-3">
+                            Total
+                        </th>
 
-              <td className="p-3">${venta.total}</td>
+                        <th className="p-3">
+                            Acciones
+                        </th>
 
-              <td className="p-3">
-                {new Date(venta.fecha).toLocaleDateString()}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {
+                        ventas.map((venta, index) => (
+
+                            <tr
+                                key={`${venta.id_venta}-${index}`}
+                                className="text-center border-b"
+                            >
+
+                                <td className="p-3">
+                                    {venta.id_venta}
+                                </td>
+
+                                <td className="p-3">
+                                    {
+                                        new Date(
+                                            venta.fecha
+                                        ).toLocaleString()
+                                    }
+                                </td>
+
+                                <td className="p-3">
+                                    {venta.nombre_interno}
+                                </td>
+
+                                <td className="p-3">
+                                    {venta.cantidad}
+                                </td>
+
+                                <td className="p-3">
+                                    ${venta.precio_unitario}
+                                </td>
+
+                                <td className="p-3">
+                                    ${venta.total}
+                                </td>
+
+                                <td className="p-3">
+
+                                    <button
+                                        onClick={() =>
+                                            onEliminar(
+                                                venta.id_venta
+                                            )
+                                        }
+                                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                                    >
+                                        Eliminar
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+                        ))
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    );
+
 }
 
 export default TablaVentas;
