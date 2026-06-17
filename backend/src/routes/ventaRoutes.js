@@ -5,6 +5,7 @@ const router = express.Router();
 const {
     crearVenta,
     obtenerVentas,
+    eliminarVenta,
     obtenerGanancias,
     obtenerVentasPorFecha,
     obtenerVentasPorMes
@@ -19,5 +20,7 @@ router.get("/ganancias", obtenerGanancias);
 router.get("/filtro", obtenerVentasPorFecha);
 
 router.get("/ventas-mes", obtenerVentasPorMes);
+
+router.delete("/:id", eliminarVenta);
 
 module.exports = router;

@@ -130,6 +130,8 @@ function Productos() {
             await obtenerProductos();
             limpiarFormulario();
 
+            alert("Producto guardado correctamente");
+
         } catch (error) {
 
             console.error(error);
@@ -160,6 +162,11 @@ function Productos() {
 
         setModoEdicion(true);
 
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
     };
 
     const actualizarProducto = async () => {
@@ -177,6 +184,8 @@ function Productos() {
 
             await obtenerProductos();
             limpiarFormulario();
+
+            alert("Producto actualizado correctamente");
 
         } catch (error) {
 
@@ -204,6 +213,8 @@ function Productos() {
             );
 
             await obtenerProductos();
+
+            alert("Producto eliminado correctamente");
 
         } catch (error) {
 
@@ -248,147 +259,213 @@ function Productos() {
                 Productos
             </h1>
 
-            <input
-                type="text"
-                placeholder="Buscar producto por ID, nombre o color..."
-                value={busqueda}
-                onChange={(e) =>
-                    setBusqueda(e.target.value)
-                }
-                className="border p-3 rounded-lg w-full mb-6"
-            />
-
             <div className="bg-white shadow rounded-lg p-6 mb-6">
 
-                <div className="grid grid-cols-2 gap-4">
+                <h2 className="text-2xl font-bold mb-5">
+                    {
+                        modoEdicion
+                            ? "Editar Producto"
+                            : "Registro de Productos"
+                    }
+                </h2>
 
-                    <input
-                        name="id_producto"
-                        placeholder="ID Producto"
-                        value={formulario.id_producto}
-                        onChange={handleChange}
-                        disabled={modoEdicion}
-                        className="border p-2 rounded"
-                    />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                    <input
-                        name="nombre_interno"
-                        placeholder="Nombre"
-                        value={formulario.nombre_interno}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                    />
+                    <div>
+                        <label className="block font-semibold mb-1">
+                            ID Producto
+                        </label>
 
-                    <input
-                        name="descripcion"
-                        placeholder="Descripción"
-                        value={formulario.descripcion}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                    />
+                        <input
+                            name="id_producto"
+                            placeholder="Ej. MAC-001"
+                            value={formulario.id_producto}
+                            onChange={handleChange}
+                            disabled={modoEdicion}
+                            className="border p-3 rounded w-full"
+                        />
+                    </div>
 
-                    <input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        name="costo_compra"
-                        placeholder="Costo Compra"
-                        value={formulario.costo_compra}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                    />
+                    <div>
+                        <label className="block font-semibold mb-1">
+                            Nombre del Producto
+                        </label>
 
-                    <input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        name="precio_venta"
-                        placeholder="Precio Venta"
-                        value={formulario.precio_venta}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                    />
+                        <input
+                            name="nombre_interno"
+                            placeholder="Ej. Maceta de barro"
+                            value={formulario.nombre_interno}
+                            onChange={handleChange}
+                            className="border p-3 rounded w-full"
+                        />
+                    </div>
 
-                    <input
-                        type="number"
-                        min="0"
-                        step="1"
-                        name="stock"
-                        placeholder="Stock"
-                        value={formulario.stock}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                    />
+                    <div>
+                        <label className="block font-semibold mb-1">
+                            Descripción
+                        </label>
 
-                    <input
-                        name="tamaño"
-                        placeholder="Tamaño"
-                        value={formulario.tamaño}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                    />
+                        <input
+                            name="descripcion"
+                            placeholder="Ej. Maceta artesanal"
+                            value={formulario.descripcion}
+                            onChange={handleChange}
+                            className="border p-3 rounded w-full"
+                        />
+                    </div>
 
-                    <input
-                        name="color"
-                        placeholder="Color"
-                        value={formulario.color}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                    />
+                    <div>
+                        <label className="block font-semibold mb-1">
+                            Costo de Compra ($)
+                        </label>
 
-                    <input
-                        name="material"
-                        placeholder="Material"
-                        value={formulario.material}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                    />
+                        <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            name="costo_compra"
+                            placeholder="Ej. 120.00"
+                            value={formulario.costo_compra}
+                            onChange={handleChange}
+                            className="border p-3 rounded w-full"
+                        />
+                    </div>
 
-                    <input
-                        type="file"
-                        onChange={async (e) => {
+                    <div>
+                        <label className="block font-semibold mb-1">
+                            Precio de Venta ($)
+                        </label>
 
-                            const archivo =
-                                e.target.files[0];
+                        <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            name="precio_venta"
+                            placeholder="Ej. 220.00"
+                            value={formulario.precio_venta}
+                            onChange={handleChange}
+                            className="border p-3 rounded w-full"
+                        />
+                    </div>
 
-                            if (!archivo) {
-                                return;
-                            }
+                    <div>
+                        <label className="block font-semibold mb-1">
+                            Stock
+                        </label>
 
-                            const data =
-                                new FormData();
+                        <input
+                            type="number"
+                            min="0"
+                            step="1"
+                            name="stock"
+                            placeholder="Ej. 10"
+                            value={formulario.stock}
+                            onChange={handleChange}
+                            className="border p-3 rounded w-full"
+                        />
+                    </div>
 
-                            data.append(
-                                "imagen",
-                                archivo
-                            );
+                    <div>
+                        <label className="block font-semibold mb-1">
+                            Tamaño
+                        </label>
 
-                            const response =
-                                await axios.post(
-                                    `${API_URL}/api/upload`,
-                                    data
+                        <input
+                            name="tamaño"
+                            placeholder="Ej. Grande, mediana, 12x15"
+                            value={formulario.tamaño}
+                            onChange={handleChange}
+                            className="border p-3 rounded w-full"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block font-semibold mb-1">
+                            Color
+                        </label>
+
+                        <input
+                            name="color"
+                            placeholder="Ej. Rojo, café, verde"
+                            value={formulario.color}
+                            onChange={handleChange}
+                            className="border p-3 rounded w-full"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block font-semibold mb-1">
+                            Material
+                        </label>
+
+                        <input
+                            name="material"
+                            placeholder="Ej. Barro"
+                            value={formulario.material}
+                            onChange={handleChange}
+                            className="border p-3 rounded w-full"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block font-semibold mb-1">
+                            Imagen del Producto
+                        </label>
+
+                        <input
+                            type="file"
+                            onChange={async (e) => {
+
+                                const archivo =
+                                    e.target.files[0];
+
+                                if (!archivo) {
+                                    return;
+                                }
+
+                                const data =
+                                    new FormData();
+
+                                data.append(
+                                    "imagen",
+                                    archivo
                                 );
 
-                            setFormulario({
-                                ...formulario,
-                                imagen:
-                                    response.data.imagen
-                            });
+                                const response =
+                                    await axios.post(
+                                        `${API_URL}/api/upload`,
+                                        data
+                                    );
 
-                        }}
-                        className="border p-2 rounded"
-                    />
+                                setFormulario({
+                                    ...formulario,
+                                    imagen:
+                                        response.data.imagen
+                                });
+
+                            }}
+                            className="border p-3 rounded w-full"
+                        />
+
+                        {
+                            formulario.imagen && (
+                                <p className="text-sm text-green-700 mt-2">
+                                    Imagen cargada correctamente
+                                </p>
+                            )
+                        }
+                    </div>
 
                 </div>
 
-                <div className="flex gap-3 mt-4">
+                <div className="flex gap-3 mt-6">
 
                     {
                         modoEdicion ? (
 
                             <button
                                 onClick={actualizarProducto}
-                                className="bg-yellow-500 text-white px-4 py-2 rounded"
+                                className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded font-semibold"
                             >
                                 Actualizar Producto
                             </button>
@@ -397,7 +474,7 @@ function Productos() {
 
                             <button
                                 onClick={guardarProducto}
-                                className="bg-green-600 text-white px-4 py-2 rounded"
+                                className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded font-semibold"
                             >
                                 Guardar Producto
                             </button>
@@ -407,7 +484,7 @@ function Productos() {
 
                     <button
                         onClick={limpiarFormulario}
-                        className="bg-gray-500 text-white px-4 py-2 rounded"
+                        className="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded font-semibold"
                     >
                         Limpiar
                     </button>
@@ -416,21 +493,43 @@ function Productos() {
 
             </div>
 
+            <div className="mb-6">
+
+                <label className="block font-semibold mb-2">
+                    Buscar Producto
+                </label>
+
+                <input
+                    type="text"
+                    placeholder="Buscar por ID, nombre o color..."
+                    value={busqueda}
+                    onChange={(e) =>
+                        setBusqueda(e.target.value)
+                    }
+                    className="border p-3 rounded-lg w-full"
+                />
+
+            </div>
+
             <div className="bg-white shadow rounded-lg p-6 overflow-x-auto">
+
+                <h2 className="text-2xl font-bold mb-5">
+                    Lista de Productos
+                </h2>
 
                 <table className="w-full">
 
                     <thead>
 
-                        <tr className="border-b">
+                        <tr className="bg-slate-800 text-white">
 
-                            <th>Imagen</th>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Stock</th>
-                            <th>Costo</th>
-                            <th>Venta</th>
-                            <th>Acciones</th>
+                            <th className="p-3">Imagen</th>
+                            <th className="p-3">ID</th>
+                            <th className="p-3">Nombre</th>
+                            <th className="p-3">Stock</th>
+                            <th className="p-3">Costo</th>
+                            <th className="p-3">Venta</th>
+                            <th className="p-3">Acciones</th>
 
                         </tr>
 
@@ -446,10 +545,10 @@ function Productos() {
                                     className="border-b text-center"
                                 >
 
-                                    <td>
+                                    <td className="p-3">
 
                                         {
-                                            producto.imagen && (
+                                            producto.imagen ? (
 
                                                 <img
                                                     src={
@@ -459,16 +558,26 @@ function Productos() {
                                                     className="w-16 h-16 object-cover rounded mx-auto"
                                                 />
 
+                                            ) : (
+
+                                                <span className="text-gray-400">
+                                                    Sin imagen
+                                                </span>
+
                                             )
                                         }
 
                                     </td>
 
-                                    <td>{producto.id_producto}</td>
+                                    <td className="p-3">
+                                        {producto.id_producto}
+                                    </td>
 
-                                    <td>{producto.nombre_interno}</td>
+                                    <td className="p-3">
+                                        {producto.nombre_interno}
+                                    </td>
 
-                                    <td>
+                                    <td className="p-3">
                                         <span
                                             className={
                                                 producto.stock <= 5
@@ -482,11 +591,15 @@ function Productos() {
                                         </span>
                                     </td>
 
-                                    <td>${producto.costo_compra}</td>
+                                    <td className="p-3">
+                                        ${producto.costo_compra}
+                                    </td>
 
-                                    <td>${producto.precio_venta}</td>
+                                    <td className="p-3">
+                                        ${producto.precio_venta}
+                                    </td>
 
-                                    <td>
+                                    <td className="p-3">
 
                                         <div className="flex justify-center gap-2">
 
@@ -494,7 +607,7 @@ function Productos() {
                                                 onClick={() =>
                                                     editarProducto(producto)
                                                 }
-                                                className="bg-blue-600 text-white px-3 py-1 rounded"
+                                                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
                                             >
                                                 Editar
                                             </button>
@@ -505,7 +618,7 @@ function Productos() {
                                                         producto.id_producto
                                                     )
                                                 }
-                                                className="bg-red-600 text-white px-3 py-1 rounded"
+                                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
                                             >
                                                 Eliminar
                                             </button>
