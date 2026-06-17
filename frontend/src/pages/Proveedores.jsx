@@ -320,12 +320,12 @@ function Proveedores() {
                                 (proveedor) => (
 
                                     <tr
-                                        key={proveedor.id}
+                                        key={proveedor.id_proveedor}
                                         className="border-b"
                                     >
 
                                         <td className="p-3">
-                                            {proveedor.id}
+                                            {proveedor.id_proveedor}
                                         </td>
 
                                         <td className="p-3">
@@ -358,7 +358,7 @@ function Proveedores() {
                                                 <button
                                                     onClick={() =>
                                                         eliminarProveedor(
-                                                            proveedor.id
+                                                            proveedor.id_proveedor
                                                         )
                                                     }
                                                     className="bg-red-600 text-white px-3 py-1 rounded"

@@ -10,7 +10,7 @@ const obtenerProveedores = (req, res) => {
     const sql = `
         SELECT *
         FROM proveedores
-        ORDER BY id DESC
+        ORDER BY id_proveedor DESC
     `;
 
     connection.query(
@@ -25,6 +25,7 @@ const obtenerProveedores = (req, res) => {
 
         }
     );
+
 };
 
 // Crear proveedor
@@ -88,19 +89,13 @@ const actualizarProveedor = (req, res) => {
         correo
     } = req.body;
 
-    if (!nombre || nombre.trim() === "") {
-        return res.status(400).json({
-            mensaje: "El nombre del proveedor es obligatorio"
-        });
-    }
-
     const sql = `
         UPDATE proveedores
         SET
             nombre = ?,
             telefono = ?,
             correo = ?
-        WHERE id = ?
+        WHERE id_proveedor = ?
     `;
 
     connection.query(
@@ -117,19 +112,13 @@ const actualizarProveedor = (req, res) => {
                 return res.status(500).json(err);
             }
 
-            registrarBitacora(
-                "Sistema",
-                "admin",
-                `Actualizó proveedor ${nombre}`,
-                "Proveedores"
-            );
-
             res.json({
                 mensaje: "Proveedor actualizado"
             });
 
         }
     );
+
 };
 
 // Eliminar proveedor
@@ -137,59 +126,27 @@ const eliminarProveedor = (req, res) => {
 
     const { id } = req.params;
 
-    const sqlRelacion = `
-        SELECT id
-        FROM producto_proveedor
+    const sql = `
+        DELETE FROM proveedores
         WHERE id_proveedor = ?
-        LIMIT 1
     `;
 
     connection.query(
-        sqlRelacion,
+        sql,
         [id],
-        (err, results) => {
+        (err) => {
 
             if (err) {
                 return res.status(500).json(err);
             }
 
-            if (results.length > 0) {
-                return res.status(400).json({
-                    mensaje:
-                        "No se puede eliminar este proveedor porque está relacionado con productos"
-                });
-            }
-
-            const sql = `
-                DELETE FROM proveedores
-                WHERE id = ?
-            `;
-
-            connection.query(
-                sql,
-                [id],
-                (err) => {
-
-                    if (err) {
-                        return res.status(500).json(err);
-                    }
-
-                    registrarBitacora(
-                        "Sistema",
-                        "admin",
-                        `Eliminó proveedor ${id}`,
-                        "Proveedores"
-                    );
-
-                    res.json({
-                        mensaje: "Proveedor eliminado"
-                    });
-
-                }
-            );
+            res.json({
+                mensaje: "Proveedor eliminado"
+            });
 
         }
     );
+
 };
 
 // Relacionar producto con proveedor
