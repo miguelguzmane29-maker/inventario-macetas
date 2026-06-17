@@ -1,17 +1,15 @@
-const express =
-require("express");
+const express = require("express");
 
-const router =
-express.Router();
+const router = express.Router();
 
 const {
     obtenerProveedores,
     crearProveedor,
+    actualizarProveedor,
+    eliminarProveedor,
     relacionarProductoProveedor,
     obtenerRelacionProductoProveedor
-} = require(
-"../controllers/proveedorController"
-);
+} = require("../controllers/proveedorController");
 
 router.get(
     "/",
@@ -21,6 +19,16 @@ router.get(
 router.post(
     "/",
     crearProveedor
+);
+
+router.put(
+    "/:id",
+    actualizarProveedor
+);
+
+router.delete(
+    "/:id",
+    eliminarProveedor
 );
 
 router.post(
@@ -33,5 +41,4 @@ router.get(
     obtenerRelacionProductoProveedor
 );
 
-module.exports =
-router;
+module.exports = router;

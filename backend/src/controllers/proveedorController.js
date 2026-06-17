@@ -1,19 +1,24 @@
 const connection = require("../config/db");
 
+const {
+    registrarBitacora
+} = require("./bitacoraController");
+
 // Obtener proveedores
 const obtenerProveedores = (req, res) => {
 
-    const sql =
-        "SELECT * FROM proveedores";
+    const sql = `
+        SELECT *
+        FROM proveedores
+        ORDER BY id DESC
+    `;
 
     connection.query(
         sql,
         (err, results) => {
 
             if (err) {
-                return res
-                    .status(500)
-                    .json(err);
+                return res.status(500).json(err);
             }
 
             res.json(results);
@@ -31,6 +36,12 @@ const crearProveedor = (req, res) => {
         correo
     } = req.body;
 
+    if (!nombre || nombre.trim() === "") {
+        return res.status(400).json({
+            mensaje: "El nombre del proveedor es obligatorio"
+        });
+    }
+
     const sql = `
         INSERT INTO proveedores
         (nombre, telefono, correo)
@@ -47,31 +58,154 @@ const crearProveedor = (req, res) => {
         (err, result) => {
 
             if (err) {
-                return res
-                    .status(500)
-                    .json(err);
+                return res.status(500).json(err);
             }
 
+            registrarBitacora(
+                "Sistema",
+                "admin",
+                `Creó proveedor ${nombre}`,
+                "Proveedores"
+            );
+
             res.json({
-                mensaje:
-                    "Proveedor creado",
-                id:
-                    result.insertId
+                mensaje: "Proveedor creado",
+                id: result.insertId
             });
 
         }
     );
 };
 
+// Actualizar proveedor
+const actualizarProveedor = (req, res) => {
+
+    const { id } = req.params;
+
+    const {
+        nombre,
+        telefono,
+        correo
+    } = req.body;
+
+    if (!nombre || nombre.trim() === "") {
+        return res.status(400).json({
+            mensaje: "El nombre del proveedor es obligatorio"
+        });
+    }
+
+    const sql = `
+        UPDATE proveedores
+        SET
+            nombre = ?,
+            telefono = ?,
+            correo = ?
+        WHERE id = ?
+    `;
+
+    connection.query(
+        sql,
+        [
+            nombre,
+            telefono,
+            correo,
+            id
+        ],
+        (err) => {
+
+            if (err) {
+                return res.status(500).json(err);
+            }
+
+            registrarBitacora(
+                "Sistema",
+                "admin",
+                `Actualizó proveedor ${nombre}`,
+                "Proveedores"
+            );
+
+            res.json({
+                mensaje: "Proveedor actualizado"
+            });
+
+        }
+    );
+};
+
+// Eliminar proveedor
+const eliminarProveedor = (req, res) => {
+
+    const { id } = req.params;
+
+    const sqlRelacion = `
+        SELECT id
+        FROM producto_proveedor
+        WHERE id_proveedor = ?
+        LIMIT 1
+    `;
+
+    connection.query(
+        sqlRelacion,
+        [id],
+        (err, results) => {
+
+            if (err) {
+                return res.status(500).json(err);
+            }
+
+            if (results.length > 0) {
+                return res.status(400).json({
+                    mensaje:
+                        "No se puede eliminar este proveedor porque está relacionado con productos"
+                });
+            }
+
+            const sql = `
+                DELETE FROM proveedores
+                WHERE id = ?
+            `;
+
+            connection.query(
+                sql,
+                [id],
+                (err) => {
+
+                    if (err) {
+                        return res.status(500).json(err);
+                    }
+
+                    registrarBitacora(
+                        "Sistema",
+                        "admin",
+                        `Eliminó proveedor ${id}`,
+                        "Proveedores"
+                    );
+
+                    res.json({
+                        mensaje: "Proveedor eliminado"
+                    });
+
+                }
+            );
+
+        }
+    );
+};
+
 // Relacionar producto con proveedor
-const relacionarProductoProveedor =
-(req, res) => {
+const relacionarProductoProveedor = (req, res) => {
 
     const {
         id_producto,
         id_proveedor,
         nombre_proveedor
     } = req.body;
+
+    if (!id_producto || !id_proveedor || !nombre_proveedor) {
+        return res.status(400).json({
+            mensaje: "Todos los campos son obligatorios"
+        });
+    }
 
     const sql = `
         INSERT INTO producto_proveedor
@@ -93,14 +227,18 @@ const relacionarProductoProveedor =
         (err) => {
 
             if (err) {
-                return res
-                    .status(500)
-                    .json(err);
+                return res.status(500).json(err);
             }
 
+            registrarBitacora(
+                "Sistema",
+                "admin",
+                `Relacionó producto ${id_producto} con proveedor ${id_proveedor}`,
+                "Relaciones"
+            );
+
             res.json({
-                mensaje:
-                    "Relación creada"
+                mensaje: "Relación creada"
             });
 
         }
@@ -108,8 +246,7 @@ const relacionarProductoProveedor =
 };
 
 // Ver relaciones producto-proveedor
-const obtenerRelacionProductoProveedor =
-(req, res) => {
+const obtenerRelacionProductoProveedor = (req, res) => {
 
     const sql = `
         SELECT
@@ -119,7 +256,8 @@ const obtenerRelacionProductoProveedor =
             pp.nombre_proveedor
         FROM producto_proveedor pp
         INNER JOIN proveedores p
-        ON pp.id_proveedor = p.id
+            ON pp.id_proveedor = p.id
+        ORDER BY pp.id DESC
     `;
 
     connection.query(
@@ -127,9 +265,7 @@ const obtenerRelacionProductoProveedor =
         (err, results) => {
 
             if (err) {
-                return res
-                    .status(500)
-                    .json(err);
+                return res.status(500).json(err);
             }
 
             res.json(results);
@@ -141,6 +277,8 @@ const obtenerRelacionProductoProveedor =
 module.exports = {
     obtenerProveedores,
     crearProveedor,
+    actualizarProveedor,
+    eliminarProveedor,
     relacionarProductoProveedor,
     obtenerRelacionProductoProveedor
 };
